@@ -1,157 +1,127 @@
 
-```markdown
-# Chatbot for College Website
 
-This project involves creating a chatbot interface for a college website. It utilizes Python Flask as the backend server to handle user queries, while leveraging Groq's API for text generation through the LLAMA3.1 model. Additionally, it uses FAISS indexing for document retrieval to improve response quality.
+# College Website Chatbot with Groq API and FAISS Document Retrieval
 
----
+This project implements a chatbot integrated with a cloned version of a college website. The chatbot is designed to provide relevant, AI-generated responses based on user queries. By leveraging FAISS indexing for document retrieval and the Groq API for language processing, this chatbot delivers efficient and contextually appropriate responses.
 
 ## Table of Contents
-1. [Overview](#overview)
-2. [Project Setup](#project-setup)
-3. [Technologies Used](#technologies-used)
-4. [Backend Details](#backend-details)
-   - [1. Flask Server](#1-flask-server)
-   - [2. Document Retrieval with FAISS](#2-document-retrieval-with-faiss)
-   - [3. Groq API for Text Generation](#3-groq-api-for-text-generation)
-5. [Frontend Interface](#frontend-interface)
+
+1. [Project Overview](#project-overview)
+2. [Technologies Used](#technologies-used)
+3. [Setup Instructions](#setup-instructions)
+4. [Directory Structure](#directory-structure)
+5. [Features](#features)
 6. [Enhanced Document Retrieval and Contextual Response Generation](#enhanced-document-retrieval-and-contextual-response-generation)
-7. [How to Use](#how-to-use)
-8. [Conclusion](#conclusion)
+7. [API Routes](#api-routes)
+8. [Usage](#usage)
+9. [Future Improvements](#future-improvements)
+10. [Contributing](#contributing)
+11. [License](#license)
 
----
+## Project Overview
 
-## Overview
-The chatbot is a replica of the college website with an added chatbot interface. It is hosted on a Flask server with HTML/CSS/JavaScript handling the frontend. The chatbot is enhanced with Groq's LLAMA3.1 model, using 8 billion parameters for AI-powered responses. FAISS is utilized for document retrieval, which refines the chatbot's responses based on context.
-
-## Project Setup
-
-To get started with this project:
-1. Clone the repository.
-2. Install the required packages using `pip install -r requirements.txt`.
-3. Set up your Groq API key by exporting it to your environment:
-   ```bash
-   export GROQ_API_KEY="your_api_key_here"
-   ```
-4. Run the Flask app:
-   ```bash
-   python app.py
-   ```
-5. Open the application in your browser at `http://127.0.0.1:5000`.
+This project is a Flask-based web application that serves as an interactive chatbot for a college website. The cloned college website is fully functional and styled using HTML, CSS, and JavaScript. The chatbot uses the Groq API and the FAISS library for embedding, indexing, and retrieving documents based on user input. The Groq-powered LLM (LLAMA 3.1 with 8B parameters) is employed to generate accurate and contextually relevant responses by sending specific queries based on the documents retrieved.
 
 ## Technologies Used
 
-- **Python Flask**: For the backend server and request handling.
-- **FAISS**: For document retrieval and embedding search.
-- **Groq API**: To generate AI responses with LLAMA3.1.
-- **HTML/CSS/JavaScript**: To clone the college website and add a chatbot interface.
+- **Frontend**: HTML, CSS, JavaScript
+- **Backend**: Flask, Python
+- **Document Retrieval**: FAISS (Facebook AI Similarity Search)
+- **LLM**: Groq API (LLAMA 3.1 with 8B parameters)
+- **Additional Libraries**: Groq client library, FAISS library
 
-## Backend Details
+## Setup Instructions
 
-### 1. Flask Server
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/username/college-chatbot.git
+   cd college-chatbot
+   ```
 
-The backend server is developed with Flask and handles two main routes:
-- `GET /`: Renders the main page (college website clone) with the chatbot UI.
-- `POST /get_response`: Accepts user queries, retrieves relevant documents using FAISS, and generates responses via the Groq API.
+2. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### 2. Document Retrieval with FAISS
+3. **Set the Groq API Key**:
+   - In the code, replace the placeholder API key with your actual Groq API key.
 
-We utilize FAISS (Facebook AI Similarity Search) to build an index of document embeddings. When a user submits a query, it is embedded and then matched against the FAISS index to retrieve the most contextually relevant documents.
+4. **Run the Application**:
+   ```bash
+   python app.py
+   ```
 
-#### Code Snippet for Document Retrieval
-```python
-# Embed documents and build FAISS index
-doc_embeddings = embed_documents(documents).cpu().numpy()
-index = build_faiss_index(doc_embeddings)
+5. **Access the Chatbot**:
+   Open your web browser and go to `http://127.0.0.1:5000/`.
 
-# Embed the user query and retrieve top documents
-query_embedding = embed_documents([query]).cpu().numpy()
-top_docs_indices = search_faiss_index(index, query_embedding)
-retrieved_docs = [documents[i] for i in top_docs_indices[0]]
+## Directory Structure
+
+```
+college-chatbot/
+├── static/             # Contains CSS, JavaScript, and images
+├── templates/          # Contains HTML templates
+├── data/
+│   └── documents.txt   # The text file with documents for FAISS indexing
+├── app.py              # Main application file
+├── embeddings.py       # Contains functions for FAISS embeddings
+├── text_generation.py  # Contains functions for interacting with the Groq API
+└── README.md           # Documentation
 ```
 
-### 3. Groq API for Text Generation
+## Features
 
-We use Groq's API to interact with the LLAMA3.1 model (8B parameters). The API is configured to generate responses by taking the user query and the retrieved documents as input. The context for the model is updated at each request without fine-tuning the LLM.
-
-#### Code Snippet for Groq Integration
-```python
-from groq import Groq
-
-client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-
-def generate_response(prompt):
-    chat_completion = client.chat.completions.create(
-        messages=[{"role": "user", "content": prompt}],
-        model="llama3-8b-8192"
-    )
-    return chat_completion.choices[0].message.content
-```
-
-## Frontend Interface
-
-The frontend interface is a simple HTML form that allows users to enter their query. When the user submits the query, the interface makes a `POST` request to the Flask backend, retrieves the response, and updates the UI without reloading the page.
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Chatbot Interface</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        #response { margin-top: 20px; padding: 10px; background-color: #f4f4f4; border-radius: 5px; }
-    </style>
-</head>
-<body>
-    <h1>Chatbot</h1>
-    <form id="chatForm">
-        <label for="query">Enter your prompt:</label><br>
-        <input type="text" id="query" name="query" required>
-        <button type="submit">Get Response</button>
-    </form>
-    <div id="response"></div>
-    <script>
-        document.getElementById('chatForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const query = document.getElementById('query').value;
-            fetch('/get_response', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: query })
-            })
-            .then(response => response.json())
-            .then(data => { document.getElementById('response').innerHTML = `${data.response}`; })
-            .catch(error => { console.error('Error:', error); });
-        });
-    </script>
-</body>
-</html>
-```
+- **Chatbot with Custom Prompts**: Users can ask questions on the website, and the chatbot responds with information generated using Groq's LLM.
+- **Document Retrieval with FAISS**: This application embeds and indexes documents for efficient retrieval of relevant information.
+- **Interactive Frontend**: Chat UI is designed to feel integrated with the website, providing instant updates based on the user query.
+- **RESTful API**: Uses Flask to handle HTTP POST requests for interactions with the chatbot.
 
 ## Enhanced Document Retrieval and Contextual Response Generation
 
-This chatbot leverages FAISS indexing to improve document retrieval by embedding the documents and user queries into vector space. FAISS then efficiently retrieves relevant documents based on their similarity to the user query, providing context for the Groq API to generate better responses.
+To improve the contextual relevance of responses, the chatbot employs FAISS indexing. This setup works by embedding each document from the `documents.txt` file and building a FAISS index. The user's query is also embedded and matched against the FAISS index to identify the most relevant documents, which are then sent as part of the prompt to the Groq-powered LLM.
 
-The combination of document retrieval with FAISS and text generation using Groq's API allows for more relevant and context-aware chatbot responses. By passing the most relevant documents to the Groq API, the chatbot can generate responses that consider specific information rather than relying solely on general knowledge.
+By integrating FAISS with Groq, the system can:
 
-## How to Use
+1. **Efficiently Retrieve Contextual Information**: Only the most relevant documents are included in the prompt, resulting in more focused and accurate responses.
+2. **Optimize Performance**: Embedding documents ahead of time reduces computation during user queries, making the system faster and more scalable.
 
-1. Start the Flask server by running `python app.py`.
-2. Access the application in your browser at `http://127.0.0.1:5000`.
-3. Enter a query in the chatbot form and click "Get Response".
-4. The chatbot will display the response below the form without reloading the page.
+## API Routes
 
-## Conclusion
+### `GET /`
 
-This project combines the capabilities of FAISS for document retrieval with Groq's LLAMA3.1 model to build a chatbot that can respond accurately and contextually. The enhanced document retrieval process makes the chatbot's responses more relevant to user queries, and the frontend updates seamlessly, providing a smooth user experience.
+Renders the main HTML page (`index.html`), which serves as the user interface for interacting with the chatbot.
 
+### `POST /get_response`
+
+Receives a JSON object containing a `query` from the client, retrieves relevant documents using FAISS, and sends the combined prompt to Groq's API. The API then generates a response, which is sent back to the client in JSON format.
+
+Sample request payload:
+```json
+{
+    "query": "What can you tell me about the history of the college?"
+}
 ```
 
-This README includes:
-- A clear table of contents.
-- Step-by-step instructions for project setup and usage.
-- Technical details on backend and frontend implementations.
-- Information about the enhanced document retrieval and text generation process.
-  
-You can copy this Markdown text directly into your `README.md` file. Let me know if you need any further adjustments!
+Sample response payload:
+```json
+{
+    "response": "The college was established in ..."
+}
+```
+
+## Usage
+
+1. Open the website in a web browser, and interact with the chatbot by entering a query in the input box.
+2. Click on the submit button. The chatbot will retrieve relevant documents, generate a response using Groq's API, and display the response on the page.
+
+## Future Improvements
+
+- **Fine-Tuning the LLM**: Currently, the LLM is not fine-tuned. Fine-tuning with a larger dataset could improve response accuracy.
+- **Persistent User Sessions**: Implementing persistent sessions to maintain context over multiple queries.
+- **UI Enhancements**: Adding features like typing indicators and response loading animations for a more interactive experience.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a pull request or open an issue with your suggestions.
+
+## License
+..................
