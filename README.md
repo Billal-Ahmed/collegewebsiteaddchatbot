@@ -34,8 +34,8 @@ This project is a Flask-based web application that serves as an interactive chat
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/username/college-chatbot.git
-   cd college-chatbot
+   git clone https://github.com/Billal-Ahmed/collegewebsiteaddchatbot.git
+   cd collegewebsiteaddchatbot
    ```
 
 2. **Install Dependencies**:
