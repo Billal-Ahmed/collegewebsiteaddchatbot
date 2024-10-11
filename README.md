@@ -57,7 +57,7 @@ This project is a Flask-based web application that serves as an interactive chat
 ## Directory Structure
 
 ```
-college-chatbot/
+collegewebsiteaddchatbot/chatbot/
 ├── static/             # Contains CSS, JavaScript, and images
 ├── templates/          # Contains HTML templates
 ├── data/
