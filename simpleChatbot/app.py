@@ -6,7 +6,7 @@ counter = 0
 
 client = Groq(
     api_key=os.environ.get("GROQ_API_KEY"),
-    # export GROQ_API_KEY="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"
+    # export GROQ_API_KEY="*****************"
 )
 
 
