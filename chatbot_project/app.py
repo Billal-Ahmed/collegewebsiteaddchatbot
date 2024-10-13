@@ -13,7 +13,7 @@ doc_embeddings = embed_documents(documents).cpu().numpy()
 index = build_faiss_index(doc_embeddings)
 
 # Set your Groq API key
-api_key = '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'
+api_key = '****************************8'
 
 @app.route('/')
 def index():
