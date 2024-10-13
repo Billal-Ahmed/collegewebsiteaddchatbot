@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Chatbot</h1>
+    <form id="chatForm">
+        <label for="query">Enter your prompt:</label><br>
+        <input type="text" id="query" name="query" required>
+        <button type="submit">Get Response</button>
+    </form>
+    <br><br>
+    <hr>
+    <div>
+        <h3>Your Last Prompt: </h3>
+        <p id="check">
+    
+    
+        </p>
+    </div>
+<br><br><br><br>
+<hr>
+    <div>
+        <h3>Response:</h3>
+    <div id="response">
+
+
+
+    </div>
+</div>
+
+
+
+
+</script>
+    <script>
+        document.getElementById('chatForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent the form from submitting normally
+
+            const query = document.getElementById('query').value;  // Get the input value
+
+            document.getElementById("check").innerHTML = query;
+
+            
+            
+            // Send the data using fetch to the Flask backend
+            fetch('/get_response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: query })  // Send the input value as JSON
+            })
+            .then(response => response.json())  // Parse the JSON response
+            .then(data => {
+                // Display the response in the #response div
+                document.getElementById('response').innerHTML = `${data.response}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('response').innerHTML = 'An error occurred';
+            });
+        });
+    </script>
+</body>
+</html>
